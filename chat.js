@@ -16,18 +16,8 @@ app.get("/", function middleware(req, res) {
   res.sendFile(path.join(__dirname + "/ui/html/index.html"));
 });
 
-let isKozikCached = false;
-
-function isKozik(query) {
-  if (!isKozikCached) {
-    isKozikCached = query.toLowerCase().includes("yes");
-  }
-
-  return isKozikCached;
-}
-
-function handleQuery(query, cb) {
-  if (!isKozik(query)) {
+function handleQuery(query, predicate, cb) {
+  if (!predicate(query)) {
     cb("Are you Kozik?");
 
     return;
@@ -44,6 +34,18 @@ function handleQuery(query, cb) {
 let cc = 0;
 
 wss.on("connection", function connection(ws) {
+  var state = {
+    isKozik: false,
+  };
+
+  function isKozik(query) {
+    if (!state.isKozik) {
+      state.isKozik = query.toLowerCase().includes("yes");
+    }
+
+    return state.isKozik;
+  }
+
   console.log("client connections: ", ++cc);
 
   ws.on("message", function incoming(message) {
@@ -51,7 +53,7 @@ wss.on("connection", function connection(ws) {
       const { payload, type } = JSON.parse(message);
       switch (type) {
         case "query":
-          handleQuery(payload, function handleResponse(response) {
+          handleQuery(payload, isKozik, function handleResponse(response) {
             ws.send(
               JSON.stringify({ type: "queryResponse", payload: response })
             );
