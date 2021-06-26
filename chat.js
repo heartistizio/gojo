@@ -5,14 +5,14 @@ const app = express();
 const WebSocketServer = require("ws").Server;
 const server = require("http").createServer(app);
 const wss = new WebSocketServer({ server });
-const port = 3000;
+const PORT = 3000;
 
 // Serve js files
 app.use("/js", express.static(path.join(__dirname, "ui/js/")));
 // Serve css files
 app.use("/css", express.static(path.join(__dirname, "ui/css/")));
 
-app.get("/", (req, res) => {
+app.get("/", function middleware(req, res) {
   res.sendFile(path.join(__dirname + "/ui/html/index.html"));
 });
 
@@ -51,7 +51,7 @@ wss.on("connection", function connection(ws) {
       const { payload, type } = JSON.parse(message);
       switch (type) {
         case "query":
-          handleQuery(payload, (response) => {
+          handleQuery(payload, function handleResponse(response) {
             ws.send(
               JSON.stringify({ type: "queryResponse", payload: response })
             );
@@ -88,7 +88,7 @@ wss.on("connection", function connection(ws) {
 
 const pingPayload = JSON.stringify({ type: "ping" });
 // Keep the connection alive
-let pingInterval = setInterval(() => {
+let pingInterval = setInterval(function onInterval() {
   wss.broadcast(pingPayload);
 }, 1 * 5000);
 
@@ -103,4 +103,6 @@ wss.broadcast = function broadcast(data) {
   });
 };
 
-server.listen(port, () => console.log(`App listening on port ${port}!`));
+server.listen(PORT, function logger() {
+  console.log(`App running on port ${PORT}`);
+});
