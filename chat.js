@@ -5,7 +5,7 @@ const app = express();
 const WebSocketServer = require("ws").Server;
 const server = require("http").createServer(app);
 const wss = new WebSocketServer({ server });
-const PORT = 3000;
+const PORT = 3001;
 
 // Serve js files
 app.use("/js", express.static(path.join(__dirname, "ui/js/")));
