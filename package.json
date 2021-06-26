@@ -1,14 +1,15 @@
 {
-  "name": "app",
-  "version": "0.0.0",
-  "description": "FSFE",
+  "name": "gojo",
+  "version": "1.0.0",
+  "description": "Gojo",
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "Alek",
+  "license": "MIT",
   "dependencies": {
-    "express": "^4.17.1"
+    "express": "^4.17.1",
+    "ws": "^7.1.2"
   }
 }
